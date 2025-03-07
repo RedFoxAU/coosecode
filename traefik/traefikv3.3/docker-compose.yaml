@@ -16,13 +16,12 @@ services:
     #   - "TRAEFIK_DASHBOARD_CREDENTIALS="admin:$$2y$$0aaaaaaaaaaaaa"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "./logs:/var/log/traefik"
+      - "./certs:/certs:ro"
       - "./traefik.yaml:/traefik.yaml:ro"
       - "./dynamic.yaml:/dynamic.yaml:ro"
-      - "./certs:/certs:ro"
-      - "/etc/localtime:/etc/localtime:ro"
-      - "./traefik.yaml:/traefik.yaml:ro"
       - "./config.yaml:/config.yaml:ro"
-      - "./logs:/var/log/traefik"
 
 networks:
   proxy:
