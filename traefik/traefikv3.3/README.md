@@ -10,3 +10,10 @@
 ### ~/docker/traefik/
 ##### cert.crt
 ##### cert.key
+
+
+```
+mkdir -p ~/docker/traefik/certs
+cd ~/docker/traefik/
+touch .env traefik.yaml config.yaml dynamic.yaml
+```
