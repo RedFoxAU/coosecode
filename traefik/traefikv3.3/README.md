@@ -7,7 +7,7 @@
 ##### traefik.yaml
 ##### dynamic.yaml
 ##### config.yaml
-### ~/docker/traefik/
+### ~/docker/traefik/certs
 ##### cert.crt
 ##### cert.key
 
