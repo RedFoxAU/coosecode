@@ -1,1 +1,66 @@
+---
+# dynamic.yaml
+tls:
+  certificates:
+    - certFile: "/certs/cert.crt"
+      keyFile: "/certs/cert.key"
 
+http:
+  # middlewares:
+  #  auth:
+  #    basicAuth:
+  #      users:
+  #        - "admin:$$2y$$05$$H9Phwl5qvR3F.dhfdh"
+
+  routers:
+    traefik:
+      entryPoints:
+        - "websecure"
+      rule: "Host(`ict.DOMAIN.com`) && PathPrefix(`/traefik`)"
+      service: "api@internal"
+   # middlewares:
+     #    - "auth"
+      tls: {}
+
+    ict-homepage:
+      rule: "Host(`ict.DOMAIN.com`)"
+      service: "ict-homepage"  # match service name exactly here
+      entryPoints:
+        - "websecure"
+     # middlewares:
+     #   - "auth"
+      tls: {}
+
+    pihole:
+      rule: "Host(`ict.DOMAIN.com`) && PathPrefix(`/pihole`)"
+      service: "pihole"  # match service name exactly here
+      entryPoints:
+        - "websecure"
+   #   middlewares:
+   #     - "auth"
+      tls: {}
+
+    portainer:
+      rule: "Host(`ict.DOMAIN.com`) && PathPrefix(`/portainer`)"
+      service: "portainer"  # match service name exactly here
+      entryPoints:
+        - "websecure"
+   #   middlewares:
+   #     - "auth"
+      tls: {}
+
+  services:
+    ict-homepage:
+      loadBalancer:
+        servers:
+          - url: "http://10.193.129.113:3000"
+
+    pihole:
+      loadBalancer:
+        servers:
+          - url: "https://10.193.129.113/admin/login"
+
+    portainer:
+      loadBalancer:
+        servers:
+          - url: "https://10.193.129.113:9443"
