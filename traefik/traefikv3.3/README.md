@@ -2,11 +2,11 @@
 ## Folder Strucuture:
 
 ### ~/docker/traefik/
-#### .env
-#### docker-compose.yaml
-#### traefik.yaml
-#### dynamic.yaml
-#### config.yaml
+##### .env
+##### docker-compose.yaml
+##### traefik.yaml
+##### dynamic.yaml
+##### config.yaml
 ### ~/docker/traefik/
-#### cert.crt
-#### cert.key
+##### cert.crt
+##### cert.key
