@@ -10,3 +10,6 @@ sudo apt install -y apache2-utils
 echo $(htpasswd -nB admin) | sed -e s/\\$/\\$\\$/g
 ```
 
+```
+sudo apt install -y python3-pip && pip install bcrypt
+```
