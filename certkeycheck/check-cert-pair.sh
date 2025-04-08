@@ -4,7 +4,6 @@
 # sudo chmod +x ~/docker/traefik/check-cert-pair.sh
 # sudo ~/docker/traefik/check-cert-pair.sh
 
-# ⏱ Default timeout for input (in seconds)
 TIMEOUT=5
 
 # ✅ Root check & sudo prompt
@@ -31,73 +30,85 @@ CERT_FILE=${CERT_FILE:-./certs/fullchain.pem}
 read -t $TIMEOUT -p "🔑 Enter path to private key file [./certs/privkey.pem]: " KEY_FILE
 KEY_FILE=${KEY_FILE:-./certs/privkey.pem}
 
-# Check if files exist
+# Check existence
 if [[ ! -f "$CERT_FILE" ]]; then
-    echo ""
-    echo "❌ Certificate file not found: $CERT_FILE"
-    echo ""
+    echo -e "\n❌ Certificate file not found: $CERT_FILE\n"
     exit 1
 fi
 
 if [[ ! -f "$KEY_FILE" ]]; then
-    echo ""
-    echo "❌ Private key file not found: $KEY_FILE"
-    echo ""
+    echo -e "\n❌ Private key file not found: $KEY_FILE\n"
     exit 1
 fi
 
-# Check certificate format
+# 🔍 Validate certificate format
 if ! openssl x509 -in "$CERT_FILE" -noout > /dev/null 2>&1; then
-    echo ""    
-    echo "❌ Invalid certificate format in: $CERT_FILE"
-    echo ""    
+    echo -e "\n❌ Invalid certificate format in: $CERT_FILE\n"
     exit 1
 fi
 
-# Check key format
+# 🔍 Validate key format
 if ! openssl rsa -in "$KEY_FILE" -check -noout > /dev/null 2>&1; then
-    echo ""
-    echo "❌ Invalid RSA private key format in: $KEY_FILE"
-    echo ""
+    echo -e "\n❌ Invalid RSA private key format in: $KEY_FILE\n"
     exit 1
 fi
 
-# Match cert and key
+# 🔐 Match cert and key
 CERT_MODULUS=$(openssl x509 -noout -modulus -in "$CERT_FILE" | openssl md5)
 KEY_MODULUS=$(openssl rsa -noout -modulus -in "$KEY_FILE" | openssl md5)
 
 if [[ "$CERT_MODULUS" != "$KEY_MODULUS" ]]; then
-    echo ""
-    echo "❌ Certificate and key do NOT match!"
-    echo ""
+    echo -e "\n❌ Certificate and key do NOT match!\n"
     exit 1
 else
-    echo ""
-    echo "✅ Certificate and key match."
-    echo ""
+    echo -e "\n✅ Certificate and key match.\n"
 fi
 
-# Full chain check
+# 🔗 Check fullchain
 CERT_DEPTH=$(grep -c "BEGIN CERTIFICATE" "$CERT_FILE")
+echo "🔍 Certificate block count: $CERT_DEPTH"
 if [[ "$CERT_DEPTH" -lt 2 ]]; then
-    echo ""
-    echo "⚠️  Certificate may not include full chain. ($CERT_DEPTH certificate block(s) found)"
-    echo "   You may need to concatenate intermediate certs with your server cert."
-    echo ""
+    echo -e "⚠️  Only $CERT_DEPTH certificate block(s) found in $CERT_FILE."
+    echo "💡 It may be missing intermediate certificates (not a full chain)."
+
+    # Offer to fix if cert.pem and chain.pem are available
+    CERT_DIR=$(dirname "$CERT_FILE")
+    if [[ -f "$CERT_DIR/cert.pem" && -f "$CERT_DIR/chain.pem" ]]; then
+        read -p "🔧 Do you want to regenerate fullchain.pem from cert.pem + chain.pem? (y/N): " fix_fullchain
+        if [[ "$fix_fullchain" =~ ^[Yy]$ ]]; then
+            echo -e "\n📝 Concatenating cert.pem and chain.pem to regenerate fullchain.pem..."
+            cat "$CERT_DIR/cert.pem" "$CERT_DIR/chain.pem" > "$CERT_FILE"
+            echo -e "\n✅ fullchain.pem regenerated."
+        fi
+    fi
 else
-    echo ""
-    echo "✅ Certificate includes a full chain ($CERT_DEPTH certificate blocks)."
-    echo ""
+    echo -e "✅ Certificate includes a full chain ($CERT_DEPTH certificate blocks).\n"
 fi
 
-# Fix permissions
+# 🔐 Fix permissions
 chmod 644 "$CERT_FILE"
 chmod 600 "$KEY_FILE"
 chown root:root "$CERT_FILE" "$KEY_FILE"
 
 echo "🔐 Permissions set:"
 ls -l "$CERT_FILE" "$KEY_FILE"
+echo ""
 
-echo "✅ All done!"
+# 🔁 Re-check final state
+FINAL_DEPTH=$(grep -c "BEGIN CERTIFICATE" "$CERT_FILE")
+echo "🔁 Final certificate block count: $FINAL_DEPTH"
+echo "🔁 Verifying cert & key match one more time..."
 
+FINAL_CERT_MODULUS=$(openssl x509 -noout -modulus -in "$CERT_FILE" | openssl md5)
+FINAL_KEY_MODULUS=$(openssl rsa -noout -modulus -in "$KEY_FILE" | openssl md5)
+
+if [[ "$FINAL_CERT_MODULUS" == "$FINAL_KEY_MODULUS" && "$FINAL_DEPTH" -ge 2 ]]; then
+    echo -e "\n✅ Certificate is now valid, complete, and matches the key.\n"
+else
+    echo -e "\n❌ Something went wrong after regeneration or permission change."
+    echo -e "  Please verify your certificate chain and key.\n"
+    exit 1
+fi
+
+echo "🎉 All checks passed. Safe to use in Traefik!"
 exit 0
