@@ -16,16 +16,16 @@ fi
 
 echo "🔒 Certificate & Key Validation Script"
 echo "📁 Current directory: $(pwd)"
-echo "📦 Default certificate path: ./certs/fullchain.crt"
-echo "🔑 Default key path:         ./certs/privkey.key"
+echo "📦 Default certificate path: ./certs/fullchain.pem"
+echo "🔑 Default key path:         ./certs/privkey.pem"
 echo "⌛ Press Enter within $TIMEOUT seconds to use the default values."
 
 # Prompt with timeout and fallback
-read -t $TIMEOUT -p "📝 Enter path to certificate file [./certs/fullchain.crt]: " CERT_FILE
-CERT_FILE=${CERT_FILE:-./certs/fullchain.crt}
+read -t $TIMEOUT -p "📝 Enter path to certificate file [./certs/fullchain.pem]: " CERT_FILE
+CERT_FILE=${CERT_FILE:-./certs/fullchain.pem}
 
-read -t $TIMEOUT -p "🔑 Enter path to private key file [./certs/privkey.key]: " KEY_FILE
-KEY_FILE=${KEY_FILE:-./certs/privkey.key}
+read -t $TIMEOUT -p "🔑 Enter path to private key file [./certs/privkey.pem]: " KEY_FILE
+KEY_FILE=${KEY_FILE:-./certs/privkey.pem}
 
 # Check if files exist
 if [[ ! -f "$CERT_FILE" ]]; then
