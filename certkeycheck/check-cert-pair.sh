@@ -15,10 +15,14 @@ if [[ "$EUID" -ne 0 ]]; then
 fi
 
 echo "🔒 Certificate & Key Validation Script"
+echo ""
 echo "📁 Current directory: $(pwd)"
+echo ""
 echo "📦 Default certificate path: ./certs/fullchain.pem"
 echo "🔑 Default key path:         ./certs/privkey.pem"
+echo ""
 echo "⌛ Press Enter within $TIMEOUT seconds to use the default values."
+echo ""
 
 # Prompt with timeout and fallback
 read -t $TIMEOUT -p "📝 Enter path to certificate file [./certs/fullchain.pem]: " CERT_FILE
@@ -29,24 +33,32 @@ KEY_FILE=${KEY_FILE:-./certs/privkey.pem}
 
 # Check if files exist
 if [[ ! -f "$CERT_FILE" ]]; then
+    echo ""
     echo "❌ Certificate file not found: $CERT_FILE"
+    echo ""
     exit 1
 fi
 
 if [[ ! -f "$KEY_FILE" ]]; then
+    echo ""
     echo "❌ Private key file not found: $KEY_FILE"
+    echo ""
     exit 1
 fi
 
 # Check certificate format
 if ! openssl x509 -in "$CERT_FILE" -noout > /dev/null 2>&1; then
+    echo ""    
     echo "❌ Invalid certificate format in: $CERT_FILE"
+    echo ""    
     exit 1
 fi
 
 # Check key format
 if ! openssl rsa -in "$KEY_FILE" -check -noout > /dev/null 2>&1; then
+    echo ""
     echo "❌ Invalid RSA private key format in: $KEY_FILE"
+    echo ""
     exit 1
 fi
 
@@ -55,19 +67,27 @@ CERT_MODULUS=$(openssl x509 -noout -modulus -in "$CERT_FILE" | openssl md5)
 KEY_MODULUS=$(openssl rsa -noout -modulus -in "$KEY_FILE" | openssl md5)
 
 if [[ "$CERT_MODULUS" != "$KEY_MODULUS" ]]; then
+    echo ""
     echo "❌ Certificate and key do NOT match!"
+    echo ""
     exit 1
 else
+    echo ""
     echo "✅ Certificate and key match."
+    echo ""
 fi
 
 # Full chain check
 CERT_DEPTH=$(grep -c "BEGIN CERTIFICATE" "$CERT_FILE")
 if [[ "$CERT_DEPTH" -lt 2 ]]; then
+    echo ""
     echo "⚠️  Certificate may not include full chain. ($CERT_DEPTH certificate block(s) found)"
     echo "   You may need to concatenate intermediate certs with your server cert."
+    echo ""
 else
+    echo ""
     echo "✅ Certificate includes a full chain ($CERT_DEPTH certificate blocks)."
+    echo ""
 fi
 
 # Fix permissions
