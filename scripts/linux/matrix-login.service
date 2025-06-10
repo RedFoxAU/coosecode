@@ -1,0 +1,21 @@
+[Unit]
+Description=Matrix Screensaver Login on tty1
+# We want to start after the system reaches multi-user state and after the default getty for tty1
+After=systemd-user-sessions.service plymouth-quit-wait.service
+Conflicts=getty@tty1.service
+
+[Service]
+# Using simple type so that systemd expects the process to run in the foreground.
+Type=simple
+ExecStart=/root/matrix.sh
+#ExecStart=/usr/local/bin/matrix.sh
+Restart=always
+RestartSec=1
+TTYPath=/dev/tty1
+StandardInput=tty
+
+[Install]
+WantedBy=multi-user.target
+
+#sudo systemctl enable matrix-login.service
+#sudo systemctl start matrix-login.service
