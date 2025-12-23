@@ -2,6 +2,30 @@
 
 A comprehensive reference for entering Recovery Mode, DFU Mode, and Startup Managers across the Apple ecosystem.
 
+## 📋 Table of Contents
+*   [Apple Vision Pro & Peripherals](#apple-vision-pro--peripherals)
+    *   [Apple Vision Pro](#apple-vision-pro)
+    *   [AirTags](#airtags)
+*   [Apple TV](#apple-tv)
+    *   [Apple TV 4K (No USB Port)](#apple-tv-4k-no-usb-port)
+    *   [Apple TV HD / Earlier](#apple-tv-hd--earlier-usb-c--micro-usb)
+*   [Apple Watch](#apple-watch)
+*   [Audio Devices (HomePod & AirPods)](#audio-devices-homepod--airpods)
+    *   [HomePod & HomePod mini](#homepod-original--2nd-gen--homepod-mini)
+    *   [AirPods (Pro, Standard, & Max)](#airpods-pro-standard--max)
+*   [Mac (macOS)](#mac-macos)
+    *   [Apple Silicon (M1/M2/M3/M4)](#apple-silicon-m1-m2-m3-m4)
+    *   [Intel Macs with T2 Chip](#intel-macs-with-t2-security-chip-2018-2020)
+    *   [Intel Macs (Non-T2)](#intel-macs-non-t2)
+*   [iPad](#ipad)
+    *   [iPad with Face ID](#ipad-with-face-id-no-home-button)
+    *   [iPad with Home Button](#ipad-with-home-button)
+*   [iPhone & iPod Touch](#iphone--ipod-touch)
+    *   [iPhone 8 to iPhone 16](#iphone-8-x-11-12-13-14-15-16)
+    *   [iPhone 7 / 7 Plus](#iphone-7--7-plus--ipod-touch-7th-gen)
+    *   [iPhone 6s / SE (1st Gen)](#iphone-6s--se-1st-gen--ipod-touch-6th-gen)
+*   [⚠️ The Brutal Reset Procedures](#-the-brutal-reset-procedures-corrupt-firmware)
+
 ---
 
 ## Apple Vision Pro & Peripherals
@@ -174,7 +198,7 @@ A comprehensive reference for entering Recovery Mode, DFU Mode, and Startup Mana
 
 ---
 
-# ⚠️ The Brutal Reset Procedures (Corrupt Firmware)
+## ⚠️ The Brutal Reset Procedures (Corrupt Firmware)
 *Use these "Nuclear Options" when devices are unresponsive, bricked, or have corrupt firmware. These will erase all data.*
 
 ### 1. Mac "Revive" & "Restore" (Apple Configurator)
